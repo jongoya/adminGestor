@@ -55,7 +55,7 @@ function collectLoginResponse(loginResponse) {
 	var login = jsonResponse.login;
 	var dispositivos = jsonResponse.dispositivos;
 	var estiloPrivado = jsonResponse.estiloPrivado;
+	setTokenInStorage(login.token);
 
-
-	window.location.replace("index.html");
+	window.location.replace("plataforma.html");
 }
