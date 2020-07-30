@@ -27,6 +27,7 @@ function createCenteredTableData(text) {
 
 function createStatusTableData(status) {
 	var tableData = document.createElement('td');
+	tableData.className = "text-center";
 	var span = document.createElement('span');
 	var active = status;
 	if (active == true) {
@@ -52,7 +53,7 @@ function createActionTableData() {
 	var li = document.createElement('li');
 
 	var a = document.createElement('a');
-	a.href = "javascript:void(0);";
+	a.href = "detalleComercio.html";
 
 	var img = document.createElement("img");
 	img.setAttribute('src', 'assets/img/pencil.png');

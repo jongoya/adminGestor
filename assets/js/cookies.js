@@ -15,7 +15,7 @@ function getTokenFromStorage() {
 	return window.sessionStorage.getItem("token");
 }
 
-function deleteTokenCookie(name) { 
+function deleteTokenCookie() { 
 	window.sessionStorage.removeItem("token");
 }
 
@@ -25,5 +25,9 @@ function setUniqueDeviceIdInStorage(uniqueDeviceId) {
 
 function getUniqueDeviceIdFromStorage() {
 	return window.sessionStorage.getItem("uniqueDeviceId");
+}
+
+function deleteUniqueDeviceCookie() {
+	window.sessionStorage.removeItem("uniqueDeviceId");
 }
 
