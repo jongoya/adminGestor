@@ -19,3 +19,11 @@ function deleteTokenCookie(name) {
 	window.sessionStorage.removeItem("token");
 }
 
+function setUniqueDeviceIdInStorage(uniqueDeviceId) {
+	window.sessionStorage.setItem("uniqueDeviceId", uniqueDeviceId);
+}
+
+function getUniqueDeviceIdFromStorage() {
+	return window.sessionStorage.getItem("uniqueDeviceId");
+}
+
