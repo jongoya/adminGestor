@@ -1,4 +1,7 @@
+var visibleComercios;
+
 function addComerciosRows(comercios) {
+	visibleComercios = comercios;
 	for (i = 0; i < comercios.length; i++) {
 		var comercio = comercios[i];
 		var tableRow = document.createElement('tr');
@@ -10,7 +13,7 @@ function addComerciosRows(comercios) {
 		tableRow.appendChild(createCenteredTableData(comercio.androidBundleId));
 		tableRow.appendChild(createCenteredTableData(comercio.iosBundleId));
 		tableRow.appendChild(createStatusTableData(comercio.active));
-		tableRow.appendChild(createActionTableData());
+		tableRow.appendChild(createActionTableData(i));
 
 		
 		document.getElementById("comercios_table_body").appendChild(tableRow);
@@ -43,9 +46,10 @@ function createStatusTableData(status) {
 	return tableData;
 }
 
-function createActionTableData() {
+function createActionTableData(position) {
 	var tableData = document.createElement('td');
 	tableData.className = "text-center";
+	tableData.setAttribute("id", position);
 
 	var ul = document.createElement('ul');
 	ul.className = "table-controls";
@@ -53,7 +57,9 @@ function createActionTableData() {
 	var li = document.createElement('li');
 
 	var a = document.createElement('a');
-	a.href = "detalleComercio.html";
+	a.addEventListener('click', function() {
+		openComercioDetail(visibleComercios[position]);
+	});
 
 	var img = document.createElement("img");
 	img.setAttribute('src', 'assets/img/pencil.png');
@@ -67,7 +73,9 @@ function createActionTableData() {
 	var li2 = document.createElement('li');
 
 	var a2 = document.createElement('a');
-	a2.href = "javascript:void(0);";
+	a2.addEventListener('click', function() {
+		deleteComercioAlert(visibleComercios[position]);
+	});
 
 	var img2 = document.createElement("img");
 	img2.setAttribute('src', 'assets/img/trash.png');
@@ -83,4 +91,16 @@ function createActionTableData() {
 	tableData.appendChild(ul);
 
 	return tableData;
+}
+
+function deleteComercioAlert(comercio) {
+	if (confirm("Se eliminarán todos los datos del comercio, ¿Estas seguro?") == true) {
+		deleteComercio(comercio);
+	}
+}
+
+function openComercioDetail(comercio) {
+	saveComercioId(comercio.comercioId);
+	saveNombreApp(comercio.nombre);
+	window.open("detalleComercio.html", "_self")
 }

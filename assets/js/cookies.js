@@ -31,3 +31,27 @@ function deleteUniqueDeviceCookie() {
 	window.sessionStorage.removeItem("uniqueDeviceId");
 }
 
+function saveComercioId(comercioId) {
+	window.sessionStorage.setItem("comercioId", comercioId);
+}
+
+function getComercioId() {
+	return window.sessionStorage.getItem("comercioId");
+}
+
+function deleteComercioId() {
+	window.sessionStorage.removeItem("comercioId");
+}
+
+function saveNombreApp(nombreApp) {
+	window.sessionStorage.setItem("nombreApp", nombreApp);
+}
+
+function getNombreApp() {
+	return window.sessionStorage.getItem("nombreApp");
+}
+
+function deleteNombreApp() {
+	window.sessionStorage.removeItem("nombreApp");
+}
+

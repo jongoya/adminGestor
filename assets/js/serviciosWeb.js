@@ -100,3 +100,24 @@ function addComercio() {
 
 	http.send(params);
 }
+
+function deleteComercio(comercio) {
+	var url = baseUrl + "delete_comercio";
+	var params = JSON.stringify({"comercioId": comercio.comercioId, "nombre": comercio.nombre});
+	var http = new XMLHttpRequest();
+	http.open("POST", url, true);
+	http.setRequestHeader("Authorization", "Bearer " + getTokenFromStorage());
+	http.setRequestHeader("UniqueDeviceId", getUniqueDeviceIdFromStorage());
+	http.setRequestHeader("Content-type", "application/json");
+	http.onreadystatechange = function() {
+		if (http.readyState == 4) {
+			if (http.status == 200) {
+				window.location.reload();
+			} else {
+				alert("Error eliminando comercio");
+			}
+		}
+	}
+
+	http.send(params);
+}
