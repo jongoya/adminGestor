@@ -9,6 +9,14 @@
 	===============================
 */
 /*      Alert       */
+
+.alert_generic {
+  margin-top: 20px;
+  margin-left: 20px;
+  margin-right: 20px;
+  position: absolute;
+  z-index: 100;
+}
 .alert {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
@@ -227,3 +235,12 @@
     display: block; }
   .alert .btn {
     margin-top: 8px; } }
+
+.horizTranslate {
+  -webkit-transition: 1s;
+  -moz-transition: 1s;
+  -ms-transition: 1s;
+  -o-transition: 1s;
+  transition: 1s;
+  margin-left: 245px !important;
+}

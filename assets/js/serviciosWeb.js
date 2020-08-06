@@ -1,6 +1,8 @@
 var baseUrl = "https://gestor.djmrbug.com:8443/api/";
+var localBaseUrl = "https://localhost:8443/api/";
 
 function loginAdmin() {
+    showLoadingState();
 	var username = document.getElementById('username').value;
 	var password = document.getElementById('password').value;
 	var nombreApp = "webAdmin";
@@ -12,16 +14,17 @@ function loginAdmin() {
 	http.open("POST", url, true);
 	http.setRequestHeader("Content-type", "application/json");
 	http.onreadystatechange = function() {
+		hideLoadingState();
 		if (http.readyState == 4) {
 			if (http.status == 200) {
 				collectLoginResponse(http.responseText);
 				window.location.replace("plataforma.html");
 			} else if (http.status == 411) {
-				alert("Este usuario no existe");
+				document.getElementById("header").appendChild(createAlertMessage("Este usuario no existe"));
 			} else if (http.status == 412) {
-				alert("La contraseña es erronea");
+				document.getElementById("header").appendChild(createAlertMessage("La contraseña es erronea"));
 			} else {
-				alert("Error iniciando sesión intentelo de nuevo");
+				document.getElementById("header").appendChild(createAlertMessage("Error iniciando sesión intentelo de nuevo"));
 			}
 		}
 	}
@@ -36,18 +39,20 @@ function collectLoginResponse(loginResponse) {
 }
 
 function getComercios() {
+    showLoadingState();
 	var url = baseUrl + "get_comercios";
 	var http = new XMLHttpRequest();
 	http.open("GET", url, true);
 	http.setRequestHeader("Authorization", "Bearer " + getTokenFromStorage());
 	http.setRequestHeader("UniqueDeviceId", getUniqueDeviceIdFromStorage());
 	http.onreadystatechange = function() {
+		hideLoadingState();
 		if (http.readyState == 4) {
 			if (http.status == 200) {
 				var jsonResponse = JSON.parse(http.responseText);
 				addComerciosRows(jsonResponse);
 			} else {
-				alert("Error iniciando sesión intentelo de nuevo");
+				document.getElementById("header").appendChild(createAlertMessage("Error recogiendo los comercios, recarge la pagina nuevamente"));
 			}
 		}
 	}
@@ -92,8 +97,8 @@ function addComercio() {
 		if (http.readyState == 4) {
 			if (http.status == 201) {
 				window.location.replace("comercios.html");
-			} else {
-				alert("Error creando comercio");
+			} else { 
+				document.getElementById("header").appendChild(createAlertMessage("Error creando comercio"));
 			}
 		}
 	}
@@ -102,6 +107,7 @@ function addComercio() {
 }
 
 function deleteComercio(comercio) {
+    showLoadingState();
 	var url = baseUrl + "delete_comercio";
 	var params = JSON.stringify({"comercioId": comercio.comercioId, "nombre": comercio.nombre});
 	var http = new XMLHttpRequest();
@@ -110,14 +116,88 @@ function deleteComercio(comercio) {
 	http.setRequestHeader("UniqueDeviceId", getUniqueDeviceIdFromStorage());
 	http.setRequestHeader("Content-type", "application/json");
 	http.onreadystatechange = function() {
+		hideLoadingState();
 		if (http.readyState == 4) {
 			if (http.status == 200) {
 				window.location.reload();
 			} else {
-				alert("Error eliminando comercio");
+				document.getElementById("header").appendChild(createAlertMessage("Error eliminando comercio"));
 			}
 		}
 	}
 
 	http.send(params);
+}
+
+
+function updateLogin(login) {
+	var url = baseUrl + "update_login";
+	var params = JSON.stringify({"comercioId": login.comercioId, "nombre": login.nombre, "usuario": login.usuario, "password" : login.password, 
+		"androidBundleId" : login.androidBundleId != null ? login.androidBundleId : "", "iosBundleId" : login.iosBundleId != null ? login.iosBundleId : "", 
+		"numero_dispositivos" : login.numero_dispositivos, "active" : login.active});
+	var http = new XMLHttpRequest();
+	http.open("POST", url, true);
+	http.setRequestHeader("Authorization", "Bearer " + getTokenFromStorage());
+	http.setRequestHeader("UniqueDeviceId", getUniqueDeviceIdFromStorage());
+	http.setRequestHeader("Content-type", "application/json");
+	http.onreadystatechange = function() {
+		if (http.readyState == 4) {
+			if (http.status == 200) {
+				var jsonResponse = JSON.parse(http.responseText);
+				saveNombreApp(jsonResponse.nombre);
+				document.getElementById("header").appendChild(createInformationMessage("Datos del login actualizados"));
+			} else {
+				document.getElementById("header").appendChild(createAlertMessage("Error Actualizando datos del login, inténtelo de nuevo"));
+			}
+		}
+	}
+
+	http.send(params);
+}
+
+function updateEstiloPublico(estiloPublico) {
+	var url = baseUrl + "update_estilo_publico";
+	var params = JSON.stringify({"estiloId": estiloPublico.estiloId, "androidBundleId": estiloPublico.androidBundleId, "iosBundleId": estiloPublico.iosBundleId, "fondoLogin" : estiloPublico.fondoLogin, 
+		"primaryTextColor" : estiloPublico.primaryTextColor, "secondaryTextColor" : estiloPublico.secondaryTextColor, 
+		"primaryColor" : estiloPublico.primaryColor, "nombreApp" : estiloPublico.nombreApp, "iconoApp" : estiloPublico.iconoApp});
+	var http = new XMLHttpRequest();
+	http.open("POST", url, true);
+	http.setRequestHeader("Authorization", "Bearer " + getTokenFromStorage());
+	http.setRequestHeader("UniqueDeviceId", getUniqueDeviceIdFromStorage());
+	http.setRequestHeader("Content-type", "application/json");
+	http.onreadystatechange = function() {
+		if (http.readyState == 4) {
+			if (http.status == 200) {
+				document.getElementById("header").appendChild(createInformationMessage("Datos del estilo público actualizados"));
+			} else {
+				document.getElementById("header").appendChild(createAlertMessage("Error Actualizando datos del estilo público, inténtelo de nuevo"));
+			}
+		}
+	}
+
+	http.send(params);
+}
+
+function updateEstiloPrivado(estiloPrivado) {
+	var url = baseUrl + "update_estilo_privado";
+	var params = JSON.stringify({"estiloId": estiloPrivado.estiloId, "comercioId": estiloPrivado.comercioId, "primaryTextColor": estiloPrivado.primaryTextColor, "secondaryTextColor" : estiloPrivado.secondaryTextColor, 
+		"primaryColor" : estiloPrivado.primaryColor, "secondaryColor" : estiloPrivado.secondaryColor, 
+		"backgroundColor" : estiloPrivado.backgroundColor, "navigationColor" : estiloPrivado.navigationColor, "appSmallIcon" : estiloPrivado.appSmallIcon, "appName" : estiloPrivado.appName});
+	var http = new XMLHttpRequest();
+	http.open("POST", url, true);
+	http.setRequestHeader("Authorization", "Bearer " + getTokenFromStorage());
+	http.setRequestHeader("UniqueDeviceId", getUniqueDeviceIdFromStorage());
+	http.setRequestHeader("Content-type", "application/json");
+	http.onreadystatechange = function() {
+		if (http.readyState == 4) {
+			if (http.status == 200) {
+				document.getElementById("header").appendChild(createInformationMessage("Datos del estilo privado actualizados"));
+			} else {
+				document.getElementById("header").appendChild(createAlertMessage("Error Actualizando datos del estilo privado, inténtelo de nuevo"));
+			}
+		}
+	}
+
+	http.send(params);
+
 }

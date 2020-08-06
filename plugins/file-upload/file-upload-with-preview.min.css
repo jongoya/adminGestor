@@ -89,6 +89,10 @@
   background-color: #fff;
   overflow: auto;
   padding: 15px; }
+  
+  .small {
+    height: 100px;
+  }
 
 .custom-file-container__image-multi-preview {
   position: relative;
